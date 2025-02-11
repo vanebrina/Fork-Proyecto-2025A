@@ -12,6 +12,9 @@ def iniciar():
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
+    print(f'{config_sistema.pagina=}')
+    
+
 
     print(f'{config_sistema.pagina=}')
     
