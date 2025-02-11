@@ -28,13 +28,16 @@ class Manager:
     -------
         None: Así mismo se encarga de asociar el directorio donde se mostrarán análisis sobre las ejecuciones, donde el programador haga uso del módulo de logging y profilling.
     """
-
     estado_inicial: str
-    pagina: str = aplicacion.pagina_sample_network
     ruta_base: Path = Path(SAMPLES_PATH)
 
     @property
+    def pagina(self) -> str:
+        return aplicacion.pagina_sample_network
+
+    @property
     def tpm_filename(self) -> Path:
+        print(f"{self.pagina=}")
         return (
             self.ruta_base / f"N{len(self.estado_inicial)}{self.pagina}.{CSV_EXTENSION}"
         )

@@ -5,12 +5,16 @@ from src.models.strategies.force import BruteForce
 def iniciar():
     """Punto de entrada principal"""
     #                ABCD #
-    estado_inicio = "1000"
-    condiciones =   "1110"
-    alcance =       "1111"
-    mecanismo =     "1111"
+    estado_inicio = "100000000000000"
+    condiciones =   "111111111111111"
+    alcance =       "101010101010101"
+    mecanismo =     "111111111111111"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
+
+
+    print(f'{config_sistema.pagina=}')
+    
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(config_sistema)
