@@ -1,5 +1,4 @@
 from src.controllers.manager import Manager
-
 from src.models.strategies.force import BruteForce
 
 
@@ -8,8 +7,8 @@ def iniciar():
     #                ABCD #
     estado_inicio = "1000"
     condiciones =   "1110"
-    alcance =       "1110"
-    mecanismo =     "1110"
+    alcance =       "1111"
+    mecanismo =     "1111"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
