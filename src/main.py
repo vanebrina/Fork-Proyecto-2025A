@@ -5,7 +5,7 @@ from src.controllers.strategies.q_nodes import QNodes
 
 def iniciar():
     """Punto de entrada principal"""
-        	       # ABCDEFGHIJKLMNO #
+    #                ABCDEFGHIJKLMNO #
     estado_inicio = "100000000000000"
     condiciones =   "111111111111111"
     alcance =       "111111111111111"
@@ -13,9 +13,7 @@ def iniciar():
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
-    print(f'{config_sistema.pagina=}')
-    
-
+    print(f"{config_sistema.pagina=}")
 
     ## Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = QNodes(config_sistema)

@@ -35,7 +35,7 @@ class Phi(SIA):
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
-        self.logger = SafeLogger("bruteforce_analysis")
+        self.logger = SafeLogger("phi_analysis")
         self.debug_observer = DebugObserver()
 
     # @profile(context={"type": "pyphi_analysis"})
