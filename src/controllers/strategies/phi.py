@@ -13,17 +13,20 @@ from pyphi.models.cuts import Bipartition, Part
 
 from src.middlewares.slogger import SafeLogger
 from src.middlewares.observer import DebugObserver
-from src.middlewares.profile import profile, profiler_manager
+from src.middlewares.profile import profiler_manager, profile
 
 from src.models.base.sia import SIA
 from src.models.core.solution import Solution
 from src.models.enums.distance import MetricDistance
 from src.models.base.application import aplicacion
 
+
 from src.constants.base import (
+    STR_ONE,
+)
+from src.constants.models import (
     DUMMY_ARR,
     DUMMY_PARTITION,
-    STR_ONE,
 )
 
 
@@ -35,18 +38,18 @@ class Phi(SIA):
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
-        self.logger = SafeLogger("bruteforce_analysis")
+        self.logger = SafeLogger("phi_analysis")
         self.debug_observer = DebugObserver()
 
-    @profile(context={"type": "pyphi_analysis"})
+    # @profile(context={"type": "pyphi_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         self.sia_tiempo_inicio = time.time()
         pyphi.config.WELCOME_OFF = "yes"
         estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
-        tamanho = len(estado_inicial)
+        longitud = len(estado_inicial)
 
-        indices = tuple(range(tamanho))
-        etiquetas = tuple(ABECEDARY[:tamanho])
+        indices = tuple(range(longitud))
+        etiquetas = tuple(ABECEDARY[:longitud])
 
         completo = NodeLabels(etiquetas, indices)
         mpt_estados_nodos_on = self.sia_cargar_tpm()
