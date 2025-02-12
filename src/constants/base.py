@@ -44,10 +44,3 @@ PROFILING_PATH: str = "review/profiling"
 RESOLVER_PATH: str = "review/resolver"
 CSV_EXTENSION: str = "csv"
 HTML_EXTENSION: str = "html"
-
-# Sistema
-
-DUMMY_EMD: int = -1
-DUMMY_ARR: list[int] = [-1]
-ERROR_PARTITION: str = "No hay suficientes elementos para particionar.\n"
-DUMMY_PARTITION: str = "NO-PARTITION\n"

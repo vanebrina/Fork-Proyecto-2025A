@@ -24,9 +24,11 @@ from src.middlewares.observer import DebugObserver
 from src.models.base.application import aplicacion
 from src.constants.base import (
     ACTUAL,
+    EFECTO,
+)
+from src.constants.models import (
     DUMMY_ARR,
     DUMMY_EMD,
-    EFECTO,
     ERROR_PARTITION,
 )
 
@@ -57,7 +59,9 @@ class BruteForce(SIA):
         )
         self.logger = SafeLogger("bruteforce_analysis")
 
-    @profile(context={"type": "bruteforce_analysis"}) # Descomentame y revisa el directorio `review/profiling/`! #
+    @profile(
+        context={"type": "bruteforce_analysis"}
+    )  # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
         Análisis por fuerza brutal sobre una red específica para un sistema candidato llevado a un subsistema determinado por el alcance y mecanismo indicado por el usuario.
@@ -73,8 +77,6 @@ class BruteForce(SIA):
             None: El análisis como se aprecia puede ser medido mediante el decorador de profiling, así como si se desea para algún otro método.
         """
         self.sia_preparar_subsistema(condiciones, alcance, mecanismo)
-
-        self.logger.info(condiciones)
 
         solucion_base = Solution(
             "Fuerza bruta",
@@ -125,8 +127,6 @@ class BruteForce(SIA):
         solucion_base.particion = biparticion_formateada
         solucion_base.tiempo_ejecucion = time.time() - self.sia_tiempo_inicio
         solucion_base.hablar = True
-
-        self.logger.info(small_phi, mejor_dist_marg, biparticion_formateada, True)
 
         return solucion_base
 

@@ -9,6 +9,7 @@ from src.controllers.manager import Manager
 from src.models.core.system import System
 
 from src.constants.base import COLON_DELIM, FLOAT_ZERO, STR_ZERO
+from src.constants.error import ERROR_INCOMPATIBLE_SIZES
 
 
 class SIA(ABC):
@@ -59,7 +60,7 @@ class SIA(ABC):
             - `Exception:` Es crucial que todos tengan el mismo tamaño del estado inicial para correctamente identificar los índices y valor de cada variable rápidamente.
         """
         if self.chequear_parametros(condicion, alcance, mecanismo):
-            raise Exception("Different cand and initial state size")
+            raise Exception(ERROR_INCOMPATIBLE_SIZES)
 
         dims_condicionadas = np.array(
             [ind for ind, bit in enumerate(condicion) if bit == STR_ZERO], dtype=np.int8

@@ -20,10 +20,13 @@ from src.models.core.solution import Solution
 from src.models.enums.distance import MetricDistance
 from src.models.base.application import aplicacion
 
+
 from src.constants.base import (
+    STR_ONE,
+)
+from src.constants.models import (
     DUMMY_ARR,
     DUMMY_PARTITION,
-    STR_ONE,
 )
 
 
