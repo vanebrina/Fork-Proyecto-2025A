@@ -5,7 +5,6 @@ import numpy as np
 import numpy.typing as NDArray
 
 from src.middlewares.slogger import SafeLogger
-from src.middlewares.slogger import SafeLogger
 from src.controllers.manager import Manager
 from src.models.core.system import System
 
@@ -85,6 +84,8 @@ class SIA(ABC):
         completo = System(tpm, estado_inicial)
         # self.sia_logger.critic("Original:")
         # self.sia_logger.info(completo)
+        # self.sia_logger.critic("Original:")
+        # self.sia_logger.info(completo)
 
         candidato = completo.condicionar(dims_condicionadas)
         # self.sia_logger.warn("Candidato:")
@@ -92,9 +93,9 @@ class SIA(ABC):
         # self.sia_logger.debug(candidato)
 
         subsistema = candidato.substraer(dims_alcance, dims_mecanismo)
-        self.sia_logger.critic("Subsys:")
-        self.sia_logger.debug(f"{dims_alcance, dims_mecanismo=}")
-        self.sia_logger.debug(subsistema)
+        # self.sia_logger.warn("Subsys:")
+        # self.sia_logger.debug(f"{dims_alcance, dims_mecanismo=}")
+        # self.sia_logger.error(subsistema)
 
         self.sia_subsistema = subsistema
         self.sia_dists_marginales = subsistema.distribucion_marginal()

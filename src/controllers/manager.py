@@ -30,8 +30,11 @@ class Manager:
     """
 
     estado_inicial: str
-    pagina: str = aplicacion.pagina_sample_network
     ruta_base: Path = Path(SAMPLES_PATH)
+
+    @property
+    def pagina(self) -> str:
+        return aplicacion.pagina_sample_network
 
     @property
     def tpm_filename(self) -> Path:

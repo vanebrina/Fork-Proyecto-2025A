@@ -57,7 +57,7 @@ class BruteForce(SIA):
         )
         self.logger = SafeLogger("bruteforce_analysis")
 
-    # @profile(context={"type": "bruteforce_analysis"}) # Descomentame y revisa el directorio `review/profiling/`! #
+    @profile(context={"type": "bruteforce_analysis"}) # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
         Análisis por fuerza brutal sobre una red específica para un sistema candidato llevado a un subsistema determinado por el alcance y mecanismo indicado por el usuario.

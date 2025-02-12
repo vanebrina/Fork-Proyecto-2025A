@@ -1,4 +1,5 @@
 import time
+from typing import Union
 import numpy as np
 from src.middlewares.slogger import SafeLogger
 from src.funcs.base import emd_efecto, ABECEDARY
@@ -100,6 +101,7 @@ class QNodes(SIA):
         self.etiquetas = [tuple(s.lower() for s in ABECEDARY), ABECEDARY]
         self.vertices: set[tuple]
         self.memoria_delta = dict()
+        self.memoria_omega = dict()
         self.memoria_particiones = dict()
 
         self.indices_alcance: np.ndarray
@@ -205,12 +207,14 @@ class QNodes(SIA):
         deltas_ciclo = deltas_origen
 
         for i in range(len(vertices_fase) - 2):
+            self.logger.critic(f">{i=}")
             omegas_ciclo = [vertices_fase[0]]
             deltas_ciclo = vertices_fase[1:]
 
             emd_particion_candidata = INFTY_POS
 
             for j in range(len(deltas_ciclo) - 1):
+                self.logger.critic(f"   >{j=}")
                 emd_local = 1e5
                 indice_mip: int
 
@@ -227,6 +231,7 @@ class QNodes(SIA):
                     emd_particion_candidata = emd_delta
                     dist_particion_candidata = dist_marginal_delta
                     ...
+                self.logger.critic(f"       [k]: {indice_mip}")
 
                 omegas_ciclo.append(deltas_ciclo[indice_mip])
                 deltas_ciclo.pop(indice_mip)
@@ -261,7 +266,7 @@ class QNodes(SIA):
         )
 
     def funcion_submodular(
-        self, deltas: tuple | list[tuple], omegas: list[tuple | list[tuple]]
+        self, deltas: Union[tuple, list[tuple]], omegas: list[Union[tuple, list[tuple]]]
     ):
         """
         Evalúa el impacto de combinar el conjunto de nodos individual delta y su agrupación con el conjunto omega, calculando la diferencia entre EMD (Earth Mover's Distance) de las configuraciones, en conclusión los nodos delta evaluados individualmente y su combinación con el conjunto omega.

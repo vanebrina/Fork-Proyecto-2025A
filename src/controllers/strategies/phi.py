@@ -38,7 +38,7 @@ class Phi(SIA):
         self.logger = SafeLogger("bruteforce_analysis")
         self.debug_observer = DebugObserver()
 
-    @profile(context={"type": "pyphi_analysis"})
+    # @profile(context={"type": "pyphi_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         self.sia_tiempo_inicio = time.time()
         pyphi.config.WELCOME_OFF = "yes"
