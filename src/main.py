@@ -10,7 +10,7 @@ def iniciar():
     alcance =       "1110"
     mecanismo =     "1111"
 
-    config_sistema = Manager(estado_inicial=estado_inicio, page="A")
+    config_sistema = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(config_sistema)
