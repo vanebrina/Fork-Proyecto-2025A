@@ -41,10 +41,9 @@ class Phi(SIA):
         self.logger = SafeLogger("phi_analysis")
         self.debug_observer = DebugObserver()
 
-    # @profile(context={"type": "pyphi_analysis"})
+    # @profile(context={TYPE_TAG: "pyphi_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         self.sia_tiempo_inicio = time.time()
-        pyphi.config.WELCOME_OFF = "yes"
         estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
         longitud = len(estado_inicial)
 

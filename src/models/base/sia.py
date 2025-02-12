@@ -96,14 +96,14 @@ class SIA(ABC):
         subsistema = candidato.substraer(dims_alcance, dims_mecanismo)
         self.sia_logger.critic("Subsistema creado.")
         # self.sia_logger.debug(f"{dims_alcance, dims_mecanismo=}")
-        # self.sia_logger.error(subsistema)
+        # self.sia_logger.debug(subsistema)
 
         self.sia_subsistema = subsistema
         self.sia_dists_marginales = subsistema.distribucion_marginal()
         self.sia_tiempo_inicio = time.time()
 
     def chequear_parametros(self, candidato: str, futuro: str, presente: str):
-        """Valida que los datos enviados por el usuario sean correctos, donde no hay problema si tienen la misma longitud puesto se están asignando los valores correspondientes a cada variable. 
+        """Valida que los datos enviados por el usuario sean correctos, donde no hay problema si tienen la misma longitud puesto se están asignando los valores correspondientes a cada variable.
 
         Args:
             `candidato` (str): Cadena de texto que representa la presencia o ausencia de un conjunto de variables que serán enviadas para condicionar el sistema original dejándolo como un Sistema candidato, si su bit asociado equivale a 0 se condiciona la variable, si equivale a 1 esta variable se mantendrá en el sistema durante toda la ejecución (hasta que un subsistema la marginalice).

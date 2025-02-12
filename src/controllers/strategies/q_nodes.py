@@ -15,6 +15,7 @@ from src.constants.base import (
     INFTY_NEG,
     INFTY_POS,
     LAST_IDX,
+    TYPE_TAG,
 )
 
 
@@ -107,9 +108,9 @@ class QNodes(SIA):
         self.indices_alcance: np.ndarray
         self.indices_mecanismo: np.ndarray
 
-        self.logger = SafeLogger("q_strat")
+        self.logger = SafeLogger("q_strategy")
 
-    # @profile(context={"type": "q_analysis"})
+    @profile(context={TYPE_TAG: "q_analysis"})
     def aplicar_estrategia(self, conditions, alcance, mecanismo):
         self.sia_preparar_subsistema(conditions, alcance, mecanismo)
 

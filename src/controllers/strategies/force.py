@@ -25,8 +25,11 @@ from src.models.base.application import aplicacion
 from src.constants.base import (
     ACTUAL,
     EFECTO,
+    TYPE_TAG,
 )
 from src.constants.models import (
+    BRUTEFORCE_ANALYSIS_TAG,
+    BRUTEFORCE_STRAREGY_TAG,
     DUMMY_ARR,
     DUMMY_EMD,
     ERROR_PARTITION,
@@ -57,10 +60,10 @@ class BruteForce(SIA):
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
         )
-        self.logger = SafeLogger("bruteforce_analysis")
+        self.logger = SafeLogger(BRUTEFORCE_STRAREGY_TAG)
 
     @profile(
-        context={"type": "bruteforce_analysis"}
+        context={TYPE_TAG: BRUTEFORCE_ANALYSIS_TAG}
     )  # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
@@ -130,7 +133,7 @@ class BruteForce(SIA):
 
         return solucion_base
 
-    @profile(context={"type": "bruteforce_full_analysis"})
+    @profile(context={TYPE_TAG: "bruteforce_full_analysis"})
     def analizar_completamente_una_red(self) -> None:
         """
         Se prepara el directorio de salida donde almacenaremos el análisis completo de una red específica.
