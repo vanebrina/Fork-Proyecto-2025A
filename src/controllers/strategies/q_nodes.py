@@ -206,15 +206,16 @@ class QNodes(SIA):
         omegas_ciclo = omegas_origen
         deltas_ciclo = deltas_origen
 
+        total = len(vertices_fase) - 2
         for i in range(len(vertices_fase) - 2):
-            self.logger.critic(f">{i=}")
+            self.logger.critic(f"total: {total-i}")
             omegas_ciclo = [vertices_fase[0]]
             deltas_ciclo = vertices_fase[1:]
 
             emd_particion_candidata = INFTY_POS
 
             for j in range(len(deltas_ciclo) - 1):
-                self.logger.critic(f"   >{j=}")
+                # self.logger.critic(f"   {j=}")
                 emd_local = 1e5
                 indice_mip: int
 
@@ -231,7 +232,7 @@ class QNodes(SIA):
                     emd_particion_candidata = emd_delta
                     dist_particion_candidata = dist_marginal_delta
                     ...
-                self.logger.critic(f"       [k]: {indice_mip}")
+                # self.logger.critic(f"       [k]: {indice_mip}")
 
                 omegas_ciclo.append(deltas_ciclo[indice_mip])
                 deltas_ciclo.pop(indice_mip)
