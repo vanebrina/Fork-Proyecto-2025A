@@ -6,10 +6,10 @@ from src.controllers.strategies.force import BruteForce
 def iniciar():
     """Punto de entrada principal"""
                    # ABCD #
-    estado_inicio = "100000"
-    condiciones =   "111111"
-    alcance =       "111111"
-    mecanismo =     "111111"
+    estado_inicio = "1000"
+    condiciones =   "1110"
+    alcance =       "1110"
+    mecanismo =     "1110"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
