@@ -1,8 +1,18 @@
-import time
+from colorama import Fore
+from numpy.typing import NDArray
 from typing import Callable
 import pandas as pd
 import numpy as np
-from numpy.typing import NDArray
+import time
+
+from src.controllers.manager import Manager
+
+from src.models.base.sia import SIA
+from src.models.core.system import System
+from src.models.core.solution import Solution
+
+from src.middlewares.slogger import SafeLogger
+from src.middlewares.profile import profile, profiler_manager
 
 from src.funcs.base import seleccionar_metrica, literales
 from src.funcs.format import fmt_biparticion
@@ -12,21 +22,19 @@ from src.funcs.system import (
     generar_particiones,
     generar_subsistemas,
 )
-from src.controllers.manager import Manager
-from src.models.base.sia import SIA
-from src.models.core.system import System
-from src.models.core.solution import Solution
-
-from src.middlewares.slogger import SafeLogger
-from src.middlewares.profile import profile, profiler_manager
-from src.middlewares.observer import DebugObserver
-
 from src.models.base.application import aplicacion
 from src.constants.base import (
-    ACTUAL,
+    EXCEL_EXTENSION,
+    NET_LABEL,
+    TYPE_TAG,
     EFECTO,
+    ACTUAL,
 )
 from src.constants.models import (
+    BRUTEFORCE_FULL_ANALYSIS_TAG,
+    BRUTEFORCE_STRAREGY_TAG,
+    BRUTEFORCE_ANALYSIS_TAG,
+    BRUTEFORCE_LABEL,
     DUMMY_ARR,
     DUMMY_EMD,
     ERROR_PARTITION,
@@ -51,16 +59,15 @@ class BruteForce(SIA):
     def __init__(self, config: Manager):
         super().__init__(config)
         profiler_manager.start_session(
-            f"NET{len(config.estado_inicial)}{config.pagina}"
+            f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
         )
-        self.debug_observer = DebugObserver()
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
         )
-        self.logger = SafeLogger("bruteforce_analysis")
+        self.logger = SafeLogger(BRUTEFORCE_STRAREGY_TAG)
 
     @profile(
-        context={"type": "bruteforce_analysis"}
+        context={TYPE_TAG: BRUTEFORCE_ANALYSIS_TAG}
     )  # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
@@ -79,7 +86,7 @@ class BruteForce(SIA):
         self.sia_preparar_subsistema(condiciones, alcance, mecanismo)
 
         solucion_base = Solution(
-            "Fuerza bruta",
+            BRUTEFORCE_LABEL,
             DUMMY_EMD,
             self.sia_dists_marginales,
             DUMMY_ARR,
@@ -130,7 +137,7 @@ class BruteForce(SIA):
 
         return solucion_base
 
-    @profile(context={"type": "bruteforce_full_analysis"})
+    @profile(context={TYPE_TAG: BRUTEFORCE_FULL_ANALYSIS_TAG})
     def analizar_completamente_una_red(self) -> None:
         """
         Se prepara el directorio de salida donde almacenaremos el análisis completo de una red específica.
@@ -146,6 +153,11 @@ class BruteForce(SIA):
         # system = System(tpm, initial_state, debug_observer)
         system = System(tpm, initial_state)
         self.__analizar_candidatos(system)
+        print(f"""
+{Fore.RED}Generación finalizada!{Fore.BLUE}\nRevisa tu directorio `review/resolver/`.
+{Fore.WHITE}Tamaño de la red: {len(initial_state)} nodos.
+Estado incial: {initial_state}.
+""")
 
     def __analizar_candidatos(self, sistema: System) -> None:
         """
@@ -186,22 +198,25 @@ class BruteForce(SIA):
             mecanismo_removido (System): Mecanismo obtenido de algún condicionamiento realizado con anterioridad.
             nombre_candidato (str): El noombre del sistema candidato de forma amigable, este determinará el nombre del fichero donde se guardará la solución de su análisis, esto en el directorio `review/`.
         """
-        results_file = self.sia_loader.output_dir / f"{nombre_candidato}.xlsx"
+        results_file = (
+            self.sia_loader.output_dir / f"{nombre_candidato}.{EXCEL_EXTENSION}"
+        )
 
         with pd.ExcelWriter(results_file) as writer:
             for alcance_removido, sub_present in generar_subsistemas(
                 mecanismo_removido.dims_ncubos
             ):
-                if self.__should_skip_subsystem(alcance_removido, mecanismo_removido):
-                    continue
-                self.__analizar_subsistema(
-                    mecanismo_removido,
-                    np.array(alcance_removido, dtype=np.int8),
-                    np.array(sub_present, dtype=np.int8),
-                    writer,
-                )
+                if not self.__deberia_omitir_subsistema(
+                    alcance_removido, mecanismo_removido
+                ):
+                    self.__analizar_subsistema(
+                        mecanismo_removido,
+                        np.array(alcance_removido, dtype=np.int8),
+                        np.array(sub_present, dtype=np.int8),
+                        writer,
+                    )
 
-    def __should_skip_subsystem(
+    def __deberia_omitir_subsistema(
         self, alcance_removido: tuple[int, ...], candidate: System
     ) -> bool:
         """

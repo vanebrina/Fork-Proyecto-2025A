@@ -9,12 +9,19 @@ from src.controllers.manager import Manager
 from src.models.base.sia import SIA
 
 from src.models.core.solution import Solution
+from src.constants.models import (
+    QNODES_ANALYSIS_TAG,
+    QNODES_LABEL,
+    QNODES_STRAREGY_TAG,
+)
 from src.constants.base import (
-    EFECTO,
-    ACTUAL,
+    TYPE_TAG,
+    NET_LABEL,
     INFTY_NEG,
     INFTY_POS,
     LAST_IDX,
+    EFECTO,
+    ACTUAL,
 )
 
 
@@ -93,7 +100,7 @@ class QNodes(SIA):
     def __init__(self, config: Manager):
         super().__init__(config)
         profiler_manager.start_session(
-            f"NET{len(config.estado_inicial)}{config.pagina}"
+            f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
         )
         self.m: int
         self.n: int
@@ -107,10 +114,15 @@ class QNodes(SIA):
         self.indices_alcance: np.ndarray
         self.indices_mecanismo: np.ndarray
 
-        self.logger = SafeLogger("q_strat")
+        self.logger = SafeLogger(QNODES_STRAREGY_TAG)
 
-    # @profile(context={"type": "q_analysis"})
-    def aplicar_estrategia(self, conditions, alcance, mecanismo):
+    @profile(context={TYPE_TAG: QNODES_ANALYSIS_TAG})
+    def aplicar_estrategia(
+        self,
+        conditions: str,
+        alcance: str,
+        mecanismo: str,
+    ):
         self.sia_preparar_subsistema(conditions, alcance, mecanismo)
 
         futuro = tuple(
@@ -138,7 +150,7 @@ class QNodes(SIA):
         fmt_mip = fmt_biparte_q(list(mip), self.nodes_complement(mip))
 
         return Solution(
-            estrategia="Q-Nodes",
+            estrategia=QNODES_LABEL,
             perdida=self.memoria_particiones[mip][0],
             distribucion_subsistema=self.sia_dists_marginales,
             distribucion_particion=self.memoria_particiones[mip][1],
@@ -208,7 +220,7 @@ class QNodes(SIA):
 
         total = len(vertices_fase) - 2
         for i in range(len(vertices_fase) - 2):
-            self.logger.critic(f"total: {total-i}")
+            self.logger.debug(f"total: {total-i}")
             omegas_ciclo = [vertices_fase[0]]
             deltas_ciclo = vertices_fase[1:]
 

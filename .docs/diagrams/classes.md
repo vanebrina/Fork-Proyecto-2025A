@@ -81,7 +81,6 @@ classDiagram
     class SIA{
         <<Abstract>>
         #Manager sia_loader
-        #DebugObserver sia_debug_observer
         #Logger sia_logger
         #System sia_subsistema
         #NDArray sia_dists_marginales
@@ -122,7 +121,6 @@ classDiagram
     class System{
         +NDArray estado_inicial
         +tuple ncubos
-        +SystemObserver observer
         +NDArray indices_ncubos
         +NDArray dims_ncubos
         +condicionar(indices: NDArray) System
@@ -173,12 +171,6 @@ classDiagram
         +set_estados_inactivos()
     }
 
-    class SystemObserver{
-        <<Interface>>
-        +on_condition()
-        +on_marginalize()
-        +on_partition()
-    }
 
     %% Solución
     class Solution{
@@ -198,7 +190,6 @@ classDiagram
     SIA <|-- QNodes
     Manager <-- SIA: Configuración
     System o-- NCube: Contiene
-    System --> SystemObserver: Notifica
     BruteForce --> System: Usa
     BruteForce --> Solution: Genera
     ProfilerContext --> ProfilingManager: Usa

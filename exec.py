@@ -9,8 +9,6 @@ def main():
 
     # aplicacion.pagina_sample_network = "B"
 
-    print(f"{aplicacion.pagina_sample_network=}")
-
     iniciar()
 
 

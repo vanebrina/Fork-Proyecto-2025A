@@ -38,7 +38,6 @@ class Manager:
 
     @property
     def tpm_filename(self) -> Path:
-        print(f"{self.pagina=}")
         return (
             self.ruta_base / f"N{len(self.estado_inicial)}{self.pagina}.{CSV_EXTENSION}"
         )

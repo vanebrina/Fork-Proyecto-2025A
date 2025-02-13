@@ -1,14 +1,13 @@
 import numpy as np
 
-
 INFTY_POS: float = float("inf")
 INFTY_NEG: float = float("-inf")
 
 INT_ZERO: int = int(0)
 INT_ONE: int = int(1)
 
-FLOAT_ZERO: float = float(INT_ONE)
-FLOAT_ONE: float = float(INT_ZERO)
+FLOAT_ONE: float = float(INT_ONE)
+FLOAT_ZERO: float = float(INT_ZERO)
 
 BASE_TWO: int = INT_ONE + INT_ONE
 
@@ -38,9 +37,14 @@ NEQ_SYM: str = "≠"
 BITS: tuple[int, int] = (0, 1)
 ACTIVOS, INACTIVOS = True, False
 
+NET_LABEL: str = "NET"
 LOGS_PATH: str = ".logs"
 SAMPLES_PATH: str = "src/.samples/"
 PROFILING_PATH: str = "review/profiling"
 RESOLVER_PATH: str = "review/resolver"
+
 CSV_EXTENSION: str = "csv"
 HTML_EXTENSION: str = "html"
+EXCEL_EXTENSION: str = "xlsx"
+
+TYPE_TAG = "type"
