@@ -21,7 +21,7 @@ El sistema implementa el patrón Strategy a través de la clase abstracta `SIA` 
 - `Phi`: Librería oficial, cuál utiliza algoritmos optimizados para el cálculo de φ _(small phi)_
 - `QNodes`: Implementa una estrategia basada en teoría de submodularidad
 
-Cada estrategia hereda de `SIA` _(Sistem Irreducibility Analysis)_ y debe implementar el método `aplicar_estrategia()`, permitiendo diferentes aproximaciones al problema usando el patrón [Strategy](https://refactoring.guru/es/design-patterns/strategy).
+Cada estrategia hereda de `SIA` _(System Irreducibility Analysis)_ y debe implementar el método `aplicar_estrategia()`, permitiendo diferentes aproximaciones al problema usando el patrón [Strategy](https://refactoring.guru/es/design-patterns/strategy).
 
 ### 3. Núcleo de Procesamiento
 
@@ -206,6 +206,5 @@ classDiagram
 El sistema intentó implementar varios patrones de diseño clásicos para practicar, mejorar la experiencia de usuario y darlos a conocer:
 1. Strategy (implementaciones de SIA)
 2. Singleton (sobre Application)
-3. Observer (monitoreo del sistema)
 4. Context (sistema de profiling)
 5. Immutable Object (para NCube)
