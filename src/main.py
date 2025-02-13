@@ -6,9 +6,9 @@ def iniciar():
     """Punto de entrada principal"""
                    # ABCD #
     estado_inicio = "1000"
-    condiciones =   "1110"
-    alcance =       "1110"
-    mecanismo =     "1110"
+    condiciones =   "1111"
+    alcance =       "1111"
+    mecanismo =     "1111"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
