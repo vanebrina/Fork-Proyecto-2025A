@@ -7,17 +7,17 @@ El diagrama de componentes muestra la estructura modular del sistema a nivel de 
 ### 1. Componentes Principales
 - `main.py`: Punto de entrada del sistema
 - `Manager`: Gestión de configuración y recursos
-- Estrategias (BruteForce/Phi/QNodes): Implementaciones concretas
+- Estrategias (Phi/BruteForce/QNodes): Implementaciones concretas *(Pyphi es el módulo oficial, a pesar de esto utiliza fuerza bruta para la resolución del problema)*
 
 ### 2. Módulos Base
 - `src.models.base`: Contiene las clases fundamentales
 - `src.logic.base`: Implementa funciones auxiliares
-- `src.constants.base`: Define constantes globales
+- `src.constants/`: Define constantes globales o de modelos de datos
 
 ### 3. Middlewares
+Proporcionan servicios transversales al sistema
 - `profile`: Sistema de profiling
 - `observer`: Sistema de monitoreo
-- Proporcionan servicios transversales al sistema
 
 ### 4. Utilidades y Configuración
 - Funciones de reindexación
