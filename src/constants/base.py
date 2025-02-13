@@ -6,8 +6,8 @@ INFTY_NEG: float = float("-inf")
 INT_ZERO: int = int(0)
 INT_ONE: int = int(1)
 
-FLOAT_ZERO: float = float(INT_ONE)
-FLOAT_ONE: float = float(INT_ZERO)
+FLOAT_ONE: float = float(INT_ONE)
+FLOAT_ZERO: float = float(INT_ZERO)
 
 BASE_TWO: int = INT_ONE + INT_ONE
 
