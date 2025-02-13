@@ -6,13 +6,11 @@ from src.controllers.manager import Manager
 
 import math
 
-import pyphi
 from pyphi import Network, Subsystem
 from pyphi.labels import NodeLabels
 from pyphi.models.cuts import Bipartition, Part
 
 from src.middlewares.slogger import SafeLogger
-from src.middlewares.observer import DebugObserver
 from src.middlewares.profile import profiler_manager, profile
 
 from src.models.base.sia import SIA
@@ -22,11 +20,16 @@ from src.models.base.application import aplicacion
 
 
 from src.constants.base import (
+    NET_LABEL,
+    TYPE_TAG,
     STR_ONE,
 )
 from src.constants.models import (
     DUMMY_ARR,
     DUMMY_PARTITION,
+    PYPHI_LABEL,
+    PYPHI_STRAREGY_TAG,
+    PYPHI_ANALYSIS_TAG,
 )
 
 
@@ -36,39 +39,16 @@ class Phi(SIA):
     def __init__(self, config: Manager) -> None:
         super().__init__(config)
         profiler_manager.start_session(
-            f"NET{len(config.estado_inicial)}{config.pagina}"
+            f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
         )
-        self.logger = SafeLogger("phi_analysis")
-        self.debug_observer = DebugObserver()
+        self.logger = SafeLogger(PYPHI_STRAREGY_TAG)
 
-    # @profile(context={TYPE_TAG: "pyphi_analysis"})
+    @profile(context={TYPE_TAG: PYPHI_ANALYSIS_TAG})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         self.sia_tiempo_inicio = time.time()
-        estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
-        longitud = len(estado_inicial)
-
-        indices = tuple(range(longitud))
-        etiquetas = tuple(ABECEDARY[:longitud])
-
-        completo = NodeLabels(etiquetas, indices)
-        mpt_estados_nodos_on = self.sia_cargar_tpm()
-        red = Network(tpm=mpt_estados_nodos_on, node_labels=completo)
-
-        candidato = tuple(
-            completo[i] for i, bit in enumerate(condiciones) if bit == STR_ONE
+        alcance, mecanismo, subsistema = self.preparar_subsistema(
+            condiciones, alcance, mecanismo
         )
-        subsistema = Subsystem(network=red, state=estado_inicial, nodes=candidato)
-        alcance = tuple(
-            ind
-            for ind, (bit, cond) in enumerate(zip(alcance, condiciones))
-            if (bit == STR_ONE) and (cond == STR_ONE)
-        )
-        mecanismo = tuple(
-            ind
-            for ind, (bit, cond) in enumerate(zip(mecanismo, condiciones))
-            if (bit == STR_ONE) and (cond == STR_ONE)
-        )
-
         mip = (
             subsistema.effect_mip(mecanismo, alcance)
             if aplicacion.distancia_metrica == MetricDistance.EMD_EFECTO.value
@@ -101,10 +81,38 @@ class Phi(SIA):
             )
 
         return Solution(
-            estrategia="Pyphi",
+            estrategia=PYPHI_LABEL,
             perdida=small_phi,
             distribucion_subsistema=repertorio,
             distribucion_particion=repertorio_partido,
             tiempo_total=time.time() - self.sia_tiempo_inicio,
             particion=format,
         )
+
+    def preparar_subsistema(self, condiciones: str, futuros: str, presentes: str):
+        estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
+        longitud = len(estado_inicial)
+
+        indices = tuple(range(longitud))
+        etiquetas = tuple(ABECEDARY[:longitud])
+
+        completo = NodeLabels(etiquetas, indices)
+        mpt_estados_nodos_on = self.sia_cargar_tpm()
+        red = Network(tpm=mpt_estados_nodos_on, node_labels=completo)
+
+        candidato = tuple(
+            completo[i] for i, bit in enumerate(condiciones) if bit == STR_ONE
+        )
+        subsistema = Subsystem(network=red, state=estado_inicial, nodes=candidato)
+        alcance = tuple(
+            ind
+            for ind, (bit, cond) in enumerate(zip(futuros, condiciones))
+            if (bit == STR_ONE) and (cond == STR_ONE)
+        )
+        mecanismo = tuple(
+            ind
+            for ind, (bit, cond) in enumerate(zip(presentes, condiciones))
+            if (bit == STR_ONE) and (cond == STR_ONE)
+        )
+
+        return alcance, mecanismo, subsistema

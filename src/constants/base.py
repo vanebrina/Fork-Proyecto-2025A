@@ -37,11 +37,14 @@ NEQ_SYM: str = "≠"
 BITS: tuple[int, int] = (0, 1)
 ACTIVOS, INACTIVOS = True, False
 
+NET_LABEL: str = "NET"
 LOGS_PATH: str = ".logs"
 SAMPLES_PATH: str = "src/.samples/"
 PROFILING_PATH: str = "review/profiling"
 RESOLVER_PATH: str = "review/resolver"
+
 CSV_EXTENSION: str = "csv"
 HTML_EXTENSION: str = "html"
+EXCEL_EXTENSION: str = "xlsx"
 
 TYPE_TAG = "type"
