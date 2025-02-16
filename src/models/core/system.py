@@ -144,7 +144,7 @@ class System:
         self,
         alcance_dims: NDArray[np.int8],
         mecanismo_dims: NDArray[np.int8],
-    ):
+    ) -> "System":
         """
         Permite substraer una serie de elementos a partir de un sistema completo o sun sisteam candidato tanto en el futuro/alcance como el presente/mecanismo, logrando así la generación de un subsistema.
 
@@ -207,7 +207,7 @@ class System:
                         [1. 0.]]
 
         Los indices asociados a los literales o variables independiente al tiempo son `0:(A|a), 1:(B|b), 2:(C|c)`.
-        En el ejemplo se aprecia lo que puede representarse como que el sistema `V={A_abc,B_abc,C_abc}` sufrió una martinalización en `A \in (t+1)`, dejando `B` y `C`, sobre los que se aplicó luego una marginalización en `c \in (t)`.
+        En el ejemplo se aprecia lo que puede representarse como que el sistema `V={A_abc,B_abc,C_abc}` sufrió una martinalización en `A in (t+1)`, dejando `B` y `C`, sobre los que se aplicó luego una marginalización en `c in (t)`.
         """
         valid_futures = np.setdiff1d(self.indices_ncubos, alcance_dims)
         new_sys = System.__new__(System)
@@ -267,7 +267,7 @@ class System:
         sub_dims = self.dims_ncubos
         cubes_info = [f"{c}" for c in self.ncubos]
         return (
-            f"\nSystem(indices={self.indices_ncubos}, sub_dims={sub_dims})"
+            f"\nSystem(indices={self.indices_ncubos}, dims={sub_dims})"
             f"\nInitial state: {self.estado_inicial}"
             f"\nNCubes:\n" + "\n".join(cubes_info)
         )
