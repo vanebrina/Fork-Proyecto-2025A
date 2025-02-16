@@ -50,6 +50,20 @@ class Manager:
         )
 
     def generar_red(self, dimensiones: int, datos_discretos: bool = True) -> str:
+        """
+        Se encarga de generar una red (TPM) en notación little endian para un sistema determinista o no determinista (esto en función a si contiene datos discretos o no respectivamente. Nunca confundir con un "Sistema continuo" puesto apela a otra definición totalmente diferente).
+        La red generada s almacenará en el "output_dir", un atributo dinámico en función a que si generaste una red de un tamaño X por primera vez, estará etiquetada como "A", si deseas generar otra red del mismo tamaño naturalmente contendrá los mismos datos puesto están determinados por la semilla numpy, de forma que la forma de obtener otra red diferente es actuando sobre el parámetro `datos_discretos`, siendo estas dos redes distintas en su contenido.
+
+        Args:
+            dimensiones (int): Número de nodos/elementos/variables/canales que se desea maneje la red, obteniendo un Sistema que para cada estado en $(t)$ tendrá un canalen $(t+1)$.
+            datos_discretos (bool, optional): Selecciona si se quiere que la red generada sea no determinista, con el valor de probabilidad como siempre, un real positivo entre 0 y 1 inclusivo. Por defecto es True.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            str: _description_
+        """
         np.random.seed(aplicacion.semilla_numpy)
 
         if dimensiones < 1:
