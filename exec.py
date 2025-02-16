@@ -1,6 +1,8 @@
 from src.middlewares.profile import profiler_manager
 from src.models.base.application import aplicacion
-from src.main import iniciar
+
+# from src.main import iniciar
+from src.alt import iniciar
 
 
 def main():

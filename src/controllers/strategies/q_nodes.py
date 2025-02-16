@@ -97,10 +97,10 @@ class QNodes(SIA):
       efecto (futuro).
     """
 
-    def __init__(self, config: Manager):
-        super().__init__(config)
+    def __init__(self, gestor: Manager):
+        super().__init__(gestor)
         profiler_manager.start_session(
-            f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
+            f"{NET_LABEL}{len(gestor.estado_inicial)}{gestor.pagina}"
         )
         self.m: int
         self.n: int

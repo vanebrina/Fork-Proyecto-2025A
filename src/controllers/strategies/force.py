@@ -56,10 +56,10 @@ class BruteForce(SIA):
     Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiempo en dos vistas, temporal y cumulativa sobre el coste temporal en subrutinas.
     """
 
-    def __init__(self, config: Manager):
-        super().__init__(config)
+    def __init__(self, gestor: Manager):
+        super().__init__(gestor)
         profiler_manager.start_session(
-            f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
+            f"{NET_LABEL}{len(gestor.estado_inicial)}{gestor.pagina}"
         )
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
@@ -143,11 +143,11 @@ class BruteForce(SIA):
         Se prepara el directorio de salida donde almacenaremos el análisis completo de una red específica.
         Este análisis consiste de para una red de N elementos en dos tiempos `t_0` y `t_1` para un único estado inicial, se crean todos los `{2^N}-1` factibles sistemas candidatos, posteriormente a cada uno sus `2^{m+n}` posibles biparticiones, excluyendo escenarios con alcances vacíos y finalmente cada bipartición de las `2^{m+n-1}-1` factibles.
         """
-        self.sia_loader.output_dir.mkdir(parents=True, exist_ok=True)
+        self.sia_gestor.output_dir.mkdir(parents=True, exist_ok=True)
 
         tpm = self.sia_cargar_tpm()
         initial_state = np.array(
-            [canal for canal in self.sia_loader.estado_inicial],
+            [canal for canal in self.sia_gestor.estado_inicial],
             dtype=np.int8,
         )
         # system = System(tpm, initial_state, debug_observer)
@@ -155,7 +155,7 @@ class BruteForce(SIA):
         self.__analizar_candidatos(system)
         print(f"""
 {Fore.RED}Generación finalizada!{Fore.BLUE}\nRevisa tu directorio `review/resolver/`.
-{Fore.WHITE}Tamaño de la red: {len(initial_state)} nodos.
+{Fore.WHITE}Tamaño de la red: {initial_state.size} nodos.
 Estado incial: {initial_state}.
 """)
 
@@ -167,7 +167,7 @@ Estado incial: {initial_state}.
         ----
             sistema (System): Sisteam completo que será condicionado según la combinación de dimensiones para condicionar/eliminar, formando el sistema candidato.
         """
-        cantidad = len(self.sia_loader.estado_inicial)
+        cantidad = len(self.sia_gestor.estado_inicial)
         dim_candidatas = generar_candidatos(cantidad)
 
         for dimensiones in dim_candidatas:
@@ -199,7 +199,7 @@ Estado incial: {initial_state}.
             nombre_candidato (str): El noombre del sistema candidato de forma amigable, este determinará el nombre del fichero donde se guardará la solución de su análisis, esto en el directorio `review/`.
         """
         results_file = (
-            self.sia_loader.output_dir / f"{nombre_candidato}.{EXCEL_EXTENSION}"
+            self.sia_gestor.output_dir / f"{nombre_candidato}.{EXCEL_EXTENSION}"
         )
 
         with pd.ExcelWriter(results_file) as writer:

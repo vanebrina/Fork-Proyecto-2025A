@@ -90,7 +90,7 @@ class Phi(SIA):
         )
 
     def preparar_subsistema(self, condiciones: str, futuros: str, presentes: str):
-        estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
+        estado_inicial = tuple(int(s) for s in self.sia_gestor.estado_inicial)
         longitud = len(estado_inicial)
 
         indices = tuple(range(longitud))
@@ -99,11 +99,15 @@ class Phi(SIA):
         completo = NodeLabels(etiquetas, indices)
         mpt_estados_nodos_on = self.sia_cargar_tpm()
         red = Network(tpm=mpt_estados_nodos_on, node_labels=completo)
+        self.sia_logger.critic("Original creado.")
 
         candidato = tuple(
             completo[i] for i, bit in enumerate(condiciones) if bit == STR_ONE
         )
+        self.sia_logger.critic("Candidato creado.")
+
         subsistema = Subsystem(network=red, state=estado_inicial, nodes=candidato)
+        self.sia_logger.critic("Subsistema creado.")
         alcance = tuple(
             ind
             for ind, (bit, cond) in enumerate(zip(futuros, condiciones))
