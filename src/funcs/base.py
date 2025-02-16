@@ -68,7 +68,7 @@ def emd_causal(u: NDArray[np.float64], v: NDArray[np.float64]) -> float:
     if not all(isinstance(arr, np.ndarray) for arr in [u, v]):
         raise TypeError("u and v must be numpy arrays.")
 
-    n: int = len(u)
+    n: int = u.size
     costs: NDArray[np.float64] = np.empty((n, n))
 
     for i in range(n):

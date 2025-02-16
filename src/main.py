@@ -13,15 +13,15 @@ def iniciar():
     alcance =       "1110"
     mecanismo =     "1110"
 
-    config_sistema = Manager(estado_inicial=estado_inicio)
+    gestor_sistema = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
-    analizador_fb = BruteForce(config_sistema)
+    analizador_fb = BruteForce(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_uno)
-    analizador_fb = Phi(config_sistema)
+    analizador_fb = Phi(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_uno)
-    analizador_fb = QNodes(config_sistema)
+    analizador_fb = QNodes(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_uno)

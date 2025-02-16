@@ -127,7 +127,7 @@ class NCube:
         marginable_axis = np.intersect1d(ejes, self.dims)
         if not marginable_axis.size:
             return self
-        numero_dims = len(self.dims) - 1
+        numero_dims = self.dims.size - 1
         ejes_locales = tuple(
             numero_dims - dim_idx
             for dim_idx, axis in enumerate(self.dims)

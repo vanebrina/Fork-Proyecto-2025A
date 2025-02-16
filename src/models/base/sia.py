@@ -32,8 +32,8 @@ class SIA(ABC):
         - `sia_dists_marginales` (np.ndarray): Igualmente, una copia con fines de reutilización durante cálculos con la EMD.
     """
 
-    def __init__(self, config: Manager) -> None:
-        self.sia_loader = config
+    def __init__(self, gestor: Manager) -> None:
+        self.sia_gestor = gestor
         self.sia_logger = SafeLogger(SIA_PREPARATION_TAG)
 
         self.sia_subsistema: System
@@ -48,7 +48,7 @@ class SIA(ABC):
 
     def sia_cargar_tpm(self) -> np.ndarray:
         """Carga TPM desde archivo"""
-        return np.genfromtxt(self.sia_loader.tpm_filename, delimiter=COLON_DELIM)
+        return np.genfromtxt(self.sia_gestor.tpm_filename, delimiter=COLON_DELIM)
 
     def sia_preparar_subsistema(
         self,
@@ -80,12 +80,12 @@ class SIA(ABC):
         )
 
         # Preparar directorio de salida
-        self.sia_loader.output_dir.mkdir(parents=True, exist_ok=True)
+        self.sia_gestor.output_dir.mkdir(parents=True, exist_ok=True)
 
         # Cargar y preparar datos
         tpm = self.sia_cargar_tpm()
         estado_inicial = np.array(
-            [canal for canal in self.sia_loader.estado_inicial], dtype=np.int8
+            [canal for canal in self.sia_gestor.estado_inicial], dtype=np.int8
         )
 
         # Formación de datos con logs opcionales de ejemplificación
@@ -121,7 +121,7 @@ class SIA(ABC):
             bool: True si las dimensiones son diferentes, de otra forma los parámetros enviados son válidos (y depende si existe la red asociada).
         """
         return not (
-            len(self.sia_loader.estado_inicial)
+            len(self.sia_gestor.estado_inicial)
             == len(candidato)
             == len(futuro)
             == len(presente)
