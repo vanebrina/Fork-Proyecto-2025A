@@ -8,6 +8,7 @@ import numpy as np
 from src.models.base.application import aplicacion
 from src.constants.base import (
     ABC_START,
+    COLON_DELIM,
     CSV_EXTENSION,
     SAMPLES_PATH,
     RESOLVER_PATH,
@@ -85,7 +86,7 @@ class Manager:
                 return None
 
         # Verificar archivos existentes y generar nuevo nombre
-        base_path = Path("src/.samples")
+        base_path = Path(SAMPLES_PATH)
         base_path.mkdir(parents=True, exist_ok=True)
 
         suffix = ABC_START
@@ -119,7 +120,7 @@ class Manager:
         print(f"Guardando en {filepath}...")
         start_time = time.time()
         np.savetxt(
-            filepath, states, delimiter=",", fmt="%d" if datos_discretos else "%.6f"
+            filepath, states, delimiter=COLON_DELIM, fmt="%d" if datos_discretos else "%.6f"
         )
 
         file_size_gb = os.path.getsize(filepath) / (1024**3)
