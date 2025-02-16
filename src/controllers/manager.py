@@ -55,7 +55,7 @@ class Manager:
             raise ValueError("Las dimensiones deben ser positivas")
 
         # Calcular tamaño y tiempo estimado
-        num_estados = 2**dimensiones
+        num_estados = 1 << dimensiones
         total_size_gb = (num_estados * dimensiones) / (1024**3)
         estimated_time = total_size_gb * 2
 
@@ -74,17 +74,17 @@ class Manager:
         base_path.mkdir(parents=True, exist_ok=True)
 
         suffix = ABC_START
-        while (base_path / f"N{dimensiones}{suffix}.csv").exists():
+        while (base_path / f"N{dimensiones}{suffix}.{CSV_EXTENSION}").exists():
             if (
                 input(
-                    f"Ya existe N{dimensiones}{suffix}.csv. ¿Generar nueva red? (s/n): "
+                    f"Ya existe N{dimensiones}{suffix}.{CSV_EXTENSION}. ¿Generar nueva red? (s/n): "
                 ).lower()
                 != "s"
             ):
                 return f"N{dimensiones}{suffix}.{CSV_EXTENSION}"
             suffix = chr(ord(suffix) + 1)
 
-        filename = f"N{dimensiones}{suffix}.csv"
+        filename = f"N{dimensiones}{suffix}.{CSV_EXTENSION}"
         filepath = base_path / filename
 
         # Generar estados
