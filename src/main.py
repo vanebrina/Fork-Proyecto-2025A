@@ -6,12 +6,12 @@ from src.controllers.strategies.force import BruteForce
 def iniciar():
     """Punto de entrada principal"""
                    # ABCD #
-    estado_inicio = "1000"
+    estado_inicial = "1000"
     condiciones =   "1110"
     alcance =       "1110"
     mecanismo =     "1110"
 
-    gestor_sistema = Manager(estado_inicial=estado_inicio)
+    gestor_sistema = Manager(estado_inicial)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(gestor_sistema)
