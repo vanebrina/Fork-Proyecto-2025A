@@ -1,5 +1,3 @@
-from src.controllers.strategies.phi import Phi
-from src.controllers.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
 
 from src.controllers.strategies.force import BruteForce
