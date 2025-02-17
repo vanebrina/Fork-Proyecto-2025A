@@ -28,7 +28,6 @@ def iniciar():
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     logger.critic(sia_uno)
 
-    #
     analizador_fb = QNodes(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     logger.critic(sia_uno)

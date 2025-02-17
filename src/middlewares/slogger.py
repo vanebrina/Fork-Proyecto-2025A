@@ -41,23 +41,34 @@ class ColorFormatter(logging.Formatter):
         return formatted
 
 
-# Filter para eliminar los códigos ANSI de los logs que van a archivo
+def strip_ansi_codes(text: str) -> str:
+    """Elimina los códigos ANSI de un texto."""
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", text)
+
+
 class ANSIFilter(logging.Filter):
+    """Filter para eliminar los códigos ANSI de los logs que van a archivo."""
+
     def filter(self, record):
-        if isinstance(record.msg, str):
-            record.msg = re.sub(
-                r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", record.msg
-            )
+        # Si record.msg es un objeto con __str__, aplicamos strip_ansi_codes al resultado
+        if hasattr(record, "msg"):
+            if isinstance(record.msg, str):
+                record.msg = strip_ansi_codes(record.msg)
+            else:
+                # Si es un objeto, convertimos str(object) sin códigos ANSI
+                record.msg = strip_ansi_codes(str(record.msg))
+
+        # Procesar los args si existen
         if hasattr(record, "args") and record.args:
-            new_args = []
-            for arg in record.args:
-                if isinstance(arg, str):
-                    new_args.append(
-                        re.sub(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", arg)
-                    )
-                else:
-                    new_args.append(arg)
-            record.args = tuple(new_args)
+            if isinstance(record.args, tuple):
+                new_args = []
+                for arg in record.args:
+                    if isinstance(arg, str):
+                        new_args.append(strip_ansi_codes(arg))
+                    else:
+                        new_args.append(arg)
+                record.args = tuple(new_args)
         return True
 
 
@@ -84,11 +95,6 @@ class SafeLogger:
             return f"{args_str} {kwargs_str}"
         return args_str
 
-    def _strip_ansi_codes(self, text: str) -> str:
-        """Elimina los códigos ANSI de un texto."""
-        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
-        return ansi_escape.sub("", text)
-
     def __setup_logger(self, name: str) -> logging.Logger:
         """Configura el logger con manejo de encodings y formateo personalizado."""
         # Crear estructura de directorios para logs detallados
@@ -108,7 +114,7 @@ class SafeLogger:
         last_log_file = base_log_dir / f"last_{name}.log"
 
         logger = logging.getLogger(name)
-        # Establecemos el nivel base - en este caso ERROR
+        # Establecemos el nivel base - en este caso ERROR para que capture CRITICAL y FATAL
         logger.setLevel(logging.ERROR)
         # Importante: evita la propagación a loggers padre
         logger.propagate = False
