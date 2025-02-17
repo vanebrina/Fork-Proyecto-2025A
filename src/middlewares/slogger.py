@@ -1,5 +1,6 @@
 import sys
 import logging
+import re
 from pathlib import Path
 from datetime import datetime
 from functools import wraps
@@ -40,6 +41,26 @@ class ColorFormatter(logging.Formatter):
         return formatted
 
 
+# Filter para eliminar los códigos ANSI de los logs que van a archivo
+class ANSIFilter(logging.Filter):
+    def filter(self, record):
+        if isinstance(record.msg, str):
+            record.msg = re.sub(
+                r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", record.msg
+            )
+        if hasattr(record, "args") and record.args:
+            new_args = []
+            for arg in record.args:
+                if isinstance(arg, str):
+                    new_args.append(
+                        re.sub(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", arg)
+                    )
+                else:
+                    new_args.append(arg)
+            record.args = tuple(new_args)
+        return True
+
+
 class SafeLogger:
     """Logger seguro/robusto para manejar cualquier tipo de entrada y caracteres especiales."""
 
@@ -63,6 +84,11 @@ class SafeLogger:
             return f"{args_str} {kwargs_str}"
         return args_str
 
+    def _strip_ansi_codes(self, text: str) -> str:
+        """Elimina los códigos ANSI de un texto."""
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", text)
+
     def __setup_logger(self, name: str) -> logging.Logger:
         """Configura el logger con manejo de encodings y formateo personalizado."""
         # Crear estructura de directorios para logs detallados
@@ -82,6 +108,7 @@ class SafeLogger:
         last_log_file = base_log_dir / f"last_{name}.log"
 
         logger = logging.getLogger(name)
+        # Establecemos el nivel base - en este caso ERROR
         logger.setLevel(logging.ERROR)
         # Importante: evita la propagación a loggers padre
         logger.propagate = False
@@ -99,25 +126,29 @@ class SafeLogger:
             datefmt="%H:%M:%S",  # Formato simplificado para la consola
         )
 
+        ansi_filter = ANSIFilter()
+
         # Handler para archivo detallado
         detailed_file_handler = logging.FileHandler(
             detailed_log_file, mode="w", encoding="utf-8"
         )
-        detailed_file_handler.setLevel(logging.DEBUG)
+        detailed_file_handler.setLevel(
+            logging.ERROR
+        )  # Mismo nivel que el logger principal
         detailed_file_handler.setFormatter(plain_formatter)
+        detailed_file_handler.addFilter(ansi_filter)
 
         # Handler para el archivo "last"
         last_file_handler = logging.FileHandler(
             last_log_file, mode="w", encoding="utf-8"
         )
-        last_file_handler.setLevel(logging.DEBUG)
+        last_file_handler.setLevel(logging.ERROR)  # Mismo nivel que el logger principal
         last_file_handler.setFormatter(plain_formatter)
+        last_file_handler.addFilter(ansi_filter)
 
-        # Handler para consola
+        # Handler para consola - sin filtro ANSI para preservar colores
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(
-            logging.DEBUG
-        )  # Cambiado a DEBUG para ver todos los mensajes
+        console_handler.setLevel(logging.ERROR)  # Mismo nivel que el logger principal
         console_handler.setFormatter(colored_formatter)
 
         logger.addHandler(detailed_file_handler)
