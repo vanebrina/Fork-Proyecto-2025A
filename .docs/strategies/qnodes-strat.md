@@ -44,7 +44,7 @@ flowchart TD
         P8 --> P9[Retornar EMDs y distribución]
     end
     
-    G --> Y[Formatear partición óptima]
+    G --> Y[Formatear bonito partición óptima]
     Y --> Z[Crear y retornar objeto Solution]
     Z --> AA[Fin]
 ```

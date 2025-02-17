@@ -70,7 +70,7 @@ class QNodes(SIA):
 
     Methods:
     -------
-        run(conditions, purview, mechanism):
+        run(condicion, purview, mechanism):
             Ejecuta el análisis principal de la red con las condiciones,
             purview y mecanismo especificados.
 
@@ -119,11 +119,11 @@ class QNodes(SIA):
     @profile(context={TYPE_TAG: QNODES_ANALYSIS_TAG})
     def aplicar_estrategia(
         self,
-        conditions: str,
+        condicion: str,
         alcance: str,
         mecanismo: str,
     ):
-        self.sia_preparar_subsistema(conditions, alcance, mecanismo)
+        self.sia_preparar_subsistema(condicion, alcance, mecanismo)
 
         futuro = tuple(
             (EFECTO, efecto) for efecto in self.sia_subsistema.indices_ncubos
