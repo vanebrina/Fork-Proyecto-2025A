@@ -92,10 +92,3 @@ La función submodular evalúa la combinación de conjuntos delta y omega:
 1. **Formatear Partición Óptima**: Prepara el resultado para devolver.
 2. **Crear Objeto Solution**: Encapsula toda la información de la solución.
 3. **Retornar Resultado**: Devuelve el objeto Solution con la partición óptima encontrada.
-
-## Características Clave del Algoritmo
-
-- **Construcción Incremental**: Formación gradual de grupos de nodos.
-- **Evaluación Submodular**: Uso de propiedades de submodularidad para evaluar combinaciones óptimas.
-- **Formación de Grupos**: Creación de pares candidatos en cada fase.
-- **Selección de Mínima Pérdida**: Búsqueda de la partición que minimiza la pérdida de información.
