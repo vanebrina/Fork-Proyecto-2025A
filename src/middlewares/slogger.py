@@ -1,6 +1,5 @@
 import sys
 import logging
-import re
 from pathlib import Path
 from datetime import datetime
 from functools import wraps
@@ -39,37 +38,6 @@ class ColorFormatter(logging.Formatter):
         # Restaura el nombre del nivel original
         record.levelname = original_levelname
         return formatted
-
-
-def strip_ansi_codes(text: str) -> str:
-    """Elimina los códigos ANSI de un texto."""
-    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
-    return ansi_escape.sub("", text)
-
-
-class ANSIFilter(logging.Filter):
-    """Filter para eliminar los códigos ANSI de los logs que van a archivo."""
-
-    def filter(self, record):
-        # Si record.msg es un objeto con __str__, aplicamos strip_ansi_codes al resultado
-        if hasattr(record, "msg"):
-            if isinstance(record.msg, str):
-                record.msg = strip_ansi_codes(record.msg)
-            else:
-                # Si es un objeto, convertimos str(object) sin códigos ANSI
-                record.msg = strip_ansi_codes(str(record.msg))
-
-        # Procesar los args si existen
-        if hasattr(record, "args") and record.args:
-            if isinstance(record.args, tuple):
-                new_args = []
-                for arg in record.args:
-                    if isinstance(arg, str):
-                        new_args.append(strip_ansi_codes(arg))
-                    else:
-                        new_args.append(arg)
-                record.args = tuple(new_args)
-        return True
 
 
 class SafeLogger:
@@ -114,7 +82,6 @@ class SafeLogger:
         last_log_file = base_log_dir / f"last_{name}.log"
 
         logger = logging.getLogger(name)
-        # Establecemos el nivel base - en este caso ERROR para que capture CRITICAL y FATAL
         logger.setLevel(logging.ERROR)
         # Importante: evita la propagación a loggers padre
         logger.propagate = False
@@ -132,29 +99,25 @@ class SafeLogger:
             datefmt="%H:%M:%S",  # Formato simplificado para la consola
         )
 
-        ansi_filter = ANSIFilter()
-
         # Handler para archivo detallado
         detailed_file_handler = logging.FileHandler(
             detailed_log_file, mode="w", encoding="utf-8"
         )
-        detailed_file_handler.setLevel(
-            logging.ERROR
-        )  # Mismo nivel que el logger principal
+        detailed_file_handler.setLevel(logging.DEBUG)
         detailed_file_handler.setFormatter(plain_formatter)
-        detailed_file_handler.addFilter(ansi_filter)
 
         # Handler para el archivo "last"
         last_file_handler = logging.FileHandler(
             last_log_file, mode="w", encoding="utf-8"
         )
-        last_file_handler.setLevel(logging.ERROR)  # Mismo nivel que el logger principal
+        last_file_handler.setLevel(logging.DEBUG)
         last_file_handler.setFormatter(plain_formatter)
-        last_file_handler.addFilter(ansi_filter)
 
-        # Handler para consola - sin filtro ANSI para preservar colores
+        # Handler para consola
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(logging.ERROR)  # Mismo nivel que el logger principal
+        console_handler.setLevel(
+            logging.DEBUG
+        )  # Cambiado a DEBUG para ver todos los mensajes
         console_handler.setFormatter(colored_formatter)
 
         logger.addHandler(detailed_file_handler)
@@ -164,8 +127,15 @@ class SafeLogger:
         return logger
 
     def set_log(self, level: int, *args, **kwargs) -> None:
+        import re
+
+        ANSI_ESCAPE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+
+        def remove_ansi(text: str) -> str:
+            return ANSI_ESCAPE.sub("", text)
+
         """Método genérico de logging."""
-        message = self._safe_format(*args, **kwargs)
+        message = remove_ansi(self._safe_format(*args, **kwargs))
         self._logger.log(level, message)
 
     def debug(self, *args, **kwargs) -> None:
