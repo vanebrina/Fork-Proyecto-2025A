@@ -5,7 +5,7 @@ from src.controllers.strategies.force import BruteForce
 
 def iniciar():
     """Punto de entrada principal"""
-                    # ABCD #
+                    # ABC #
     estado_inicial = "100"
     condiciones =    "111"
     alcance =        "111"
