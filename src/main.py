@@ -15,6 +15,5 @@ def iniciar():
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(gestor_sistema)
-    # sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
-    sia_uno = analizador_fb.analizar_completamente_una_red()
+    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     # print(sia_uno)
