@@ -12,7 +12,7 @@ def iniciar():
     mecanismo =      "1110"
 
     gestor_sistema = Manager(estado_inicial)
-
+    
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(
