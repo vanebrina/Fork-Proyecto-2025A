@@ -127,15 +127,8 @@ class SafeLogger:
         return logger
 
     def set_log(self, level: int, *args, **kwargs) -> None:
-        import re
-
-        ANSI_ESCAPE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
-
-        def remove_ansi(text: str) -> str:
-            return ANSI_ESCAPE.sub("", text)
-
         """Método genérico de logging."""
-        message = remove_ansi(self._safe_format(*args, **kwargs))
+        message = self._safe_format(*args, **kwargs)
         self._logger.log(level, message)
 
     def debug(self, *args, **kwargs) -> None:
