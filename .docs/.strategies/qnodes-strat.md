@@ -1,4 +1,4 @@
-# Algoritmo QNodes: Descripción Macroalgoritmica
+# Algoritmo QNodes - Descripción Macroalgoritmica
 
 En esta sección está la explicación generalizada o macroalgoritmo Q/QNodes. Así mismo en la implementación del código se cuenta una extensa documentación sobre su funcionamiento.
 
@@ -26,6 +26,8 @@ En esta sección está la explicación generalizada o macroalgoritmo Q/QNodes. A
    - `omegas_origen`: Contiene el primer elemento de los vértices
    - `deltas_origen`: Contiene todos los elementos restantes
    - `vertices_fase`: Inicializado con los vértices originales
+
+   Como tal el uso de índices en las iteraciones no tiene uso dentro al algoritmo, no obstante permite entender las fases, ciclos e iteraciones.
 
 7. **Bucle Principal de Fases (i)**:
    Para cada fase `i` en el rango `(len(vertices_fase) - 2)` *(básicamente iterar todos los elementos exeptuando el primero pues es el nodo ya tomado en omega al inicio y el final puesto ya se conocerá cuál será el peor elemento a tomar al momento que queden 2 y se seleccione el mejor)*:
