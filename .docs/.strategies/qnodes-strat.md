@@ -31,18 +31,18 @@ En esta sección está la explicación generalizada o macroalgoritmo Q/QNodes. A
    Para cada fase `i` en el rango `(len(vertices_fase) - 2)` *(básicamente iterar todos los elementos exeptuando el primero pues es el nodo ya tomado en omega al inicio y el final puesto ya se conocerá cuál será el peor elemento a tomar al momento que queden 2 y se seleccione el mejor)*:
    Es en esta fase donde podemos apreciar que en cada iteración el conjunto de particiones candidatas tiende a aumentar.
 
-   8. **Inicialización de Ciclo**:
+   1. **Inicialización de Ciclo**:
       - `omegas_ciclo`: Comienza con el primer elemento de `vertices_fase`
       - `deltas_ciclo`: Contiene todos los elementos restantes de `vertices_fase`
       - `emd_particion_candidata`: Inicializada como infinito positivo
 
-   9. **Bucle de Ciclos (j)**:
+   2. **Bucle de Ciclos (j)**:
       Para cada ciclo `j` en el rango `(len(deltas_ciclo) - 1)` se realiza lo que es la selección del mejor elemento (delta) para añadir a omega, de forma que se incrementa hasta la penúltima iteración, donde nuevamente ya conocemos cuál será el peor cuando queden dos elementos y se evalúen sus EMDs:
 
-      10. **Bucle de Iteraciones (k)**:
+      1. **Bucle de Iteraciones (k)**:
           Para cada iteración `k` en el rango `len(deltas_ciclo)` es donde se calcula cada EMD sobre los deltas remanentes del ciclo:
 
-          11. **Evaluación Submodular**:
+          1. **Evaluación Submodular**:
               - Llamar a `funcion_submodular(deltas_ciclo[k], omegas_ciclo)`
               - Esta función calcula:
                 * `emd_delta`: EMD de la bipartición del delta individual
@@ -50,19 +50,19 @@ En esta sección está la explicación generalizada o macroalgoritmo Q/QNodes. A
                 * `dist_marginal_delta`: Distribución marginal del delta
               - Calcular `emd_iteracion = emd_union - emd_delta`
 
-          12. **Actualización del Mejor Delta**:
+          2. **Actualización del Mejor Delta**:
               Al terminar el cálculo de la subrutina, si `emd_iteracion < emd_local`:
               - Actualizar `emd_local = emd_iteracion`
               - Guardar `indice_mip = k`
 
-      11. **Movimiento del Delta Óptimo**:
+      2. **Movimiento del Delta Óptimo**:
           - Añadir `deltas_ciclo[indice_mip]` a `omegas_ciclo`
           - Eliminar `deltas_ciclo[indice_mip]` de `deltas_ciclo`
 
-   10. **Almacenar Partición Candidata**:
+   3. **Almacenar Partición Candidata**:
        - Guardar en `memoria_particiones` la EMD y distribución de la partición actual
 
-   11. **Crear Nuevo Par Candidato**:
+   4. **Crear Nuevo Par Candidato**:
        - Agrupar último elemento de `omegas_ciclo` y último elemento de `deltas_ciclo` como una lista (formación del par candidato)
        - Actualizar `vertices_fase` con estos nuevos grupos, que es modificar el conjunto V inicial, de forma que ahora se tiene la agrupación del par/grupo candidato,
 
