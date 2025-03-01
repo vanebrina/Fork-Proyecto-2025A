@@ -70,7 +70,7 @@ class QNodes(SIA):
 
     Methods:
     -------
-        run(conditions, purview, mechanism):
+        run(condicion, purview, mechanism):
             Ejecuta el análisis principal de la red con las condiciones,
             purview y mecanismo especificados.
 
@@ -107,7 +107,7 @@ class QNodes(SIA):
         self.tiempos: tuple[np.ndarray, np.ndarray]
         self.etiquetas = [tuple(s.lower() for s in ABECEDARY), ABECEDARY]
         self.vertices: set[tuple]
-        self.memoria_delta = dict()
+        # self.memoria_delta = dict()
         self.memoria_omega = dict()
         self.memoria_particiones = dict()
 
@@ -119,11 +119,11 @@ class QNodes(SIA):
     @profile(context={TYPE_TAG: QNODES_ANALYSIS_TAG})
     def aplicar_estrategia(
         self,
-        conditions: str,
+        condicion: str,
         alcance: str,
         mecanismo: str,
     ):
-        self.sia_preparar_subsistema(conditions, alcance, mecanismo)
+        self.sia_preparar_subsistema(condicion, alcance, mecanismo)
 
         futuro = tuple(
             (EFECTO, efecto) for efecto in self.sia_subsistema.indices_ncubos
@@ -321,30 +321,25 @@ class QNodes(SIA):
         temporal = [[], []]
 
         if isinstance(deltas, tuple):
-            d_tiempo, o_indice = deltas
-            temporal[d_tiempo].append(o_indice)
+            d_tiempo, d_indice = deltas
+            temporal[d_tiempo].append(d_indice)
 
         else:
             for delta in deltas:
-                d_tiempo, o_indice = delta
-                temporal[d_tiempo].append(o_indice)
+                d_tiempo, d_indice = delta
+                temporal[d_tiempo].append(d_indice)
 
-        if tuple(deltas) in self.memoria_delta:
-            emd_delta, vector_delta_marginal = self.memoria_delta[tuple(deltas)]
-        else:
-            copia_delta = self.sia_subsistema
+        copia_delta = self.sia_subsistema
 
-            dims_alcance_delta = temporal[EFECTO]
-            dims_mecanismo_delta = temporal[ACTUAL]
+        dims_alcance_delta = temporal[EFECTO]
+        dims_mecanismo_delta = temporal[ACTUAL]
 
-            particion_delta = copia_delta.bipartir(
-                np.array(dims_alcance_delta, dtype=np.int8),
-                np.array(dims_mecanismo_delta, dtype=np.int8),
-            )
-            vector_delta_marginal = particion_delta.distribucion_marginal()
-            emd_delta = emd_efecto(vector_delta_marginal, self.sia_dists_marginales)
-
-            self.memoria_delta[tuple(deltas)] = emd_delta, vector_delta_marginal
+        particion_delta = copia_delta.bipartir(
+            np.array(dims_alcance_delta, dtype=np.int8),
+            np.array(dims_mecanismo_delta, dtype=np.int8),
+        )
+        vector_delta_marginal = particion_delta.distribucion_marginal()
+        emd_delta = emd_efecto(vector_delta_marginal, self.sia_dists_marginales)
 
         # Unión #
 

@@ -7,8 +7,8 @@ from src.alt import iniciar
 
 def main():
     """Inicializar el aplicativo."""
-    profiler_manager.enabled = True
-    aplicacion.pagina_sample_network = "A"
+    aplicacion.profiler_habilitado = True
+    # aplicacion.pagina_sample_network = "B"
 
     iniciar()
 
