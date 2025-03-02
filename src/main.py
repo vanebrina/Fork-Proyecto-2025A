@@ -10,7 +10,7 @@ def iniciar():
     condiciones =    "1110"
     alcance =        "1110"
     mecanismo =      "1110"
-
+    
     gestor_sistema = Manager(estado_inicial)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
