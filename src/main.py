@@ -14,7 +14,7 @@ def iniciar():
     mecanismo =      "111111"
 
     gestor_sistema = Manager(estado_inicial)
-    
+
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = QNodes(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(
