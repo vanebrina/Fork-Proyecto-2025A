@@ -55,10 +55,10 @@ class Phi(SIA):
             else subsistema.cause_mip(mecanismo, alcance)
         )
         small_phi: float = mip.phi
-        
+
         repertorio = repertorio_partido = DUMMY_ARR
         format = DUMMY_PARTITION
-
+    
         if mip.repertoire is not None:
             repertorio = mip.repertoire.flatten()
             repertorio_partido = mip.partitioned_repertoire.flatten()
