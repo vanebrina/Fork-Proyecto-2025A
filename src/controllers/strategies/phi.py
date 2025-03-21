@@ -42,7 +42,7 @@ class Phi(SIA):
             f"{NET_LABEL}{len(config.estado_inicial)}{config.pagina}"
         )
         self.logger = SafeLogger(PYPHI_STRAREGY_TAG)
-
+    
     @profile(context={TYPE_TAG: PYPHI_ANALYSIS_TAG})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         self.sia_tiempo_inicio = time.time()
