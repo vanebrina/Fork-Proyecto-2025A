@@ -54,7 +54,7 @@ class Phi(SIA):
             if aplicacion.distancia_metrica == MetricDistance.EMD_EFECTO.value
             else subsistema.cause_mip(mecanismo, alcance)
         )
-
+            
         small_phi: float = mip.phi
         repertorio = repertorio_partido = DUMMY_ARR
         format = DUMMY_PARTITION
