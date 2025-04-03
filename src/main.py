@@ -15,6 +15,6 @@ def iniciar():
     gestor_sistema = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
-    analizador_fb = Phi(gestor_sistema)
+    analizador_fb = QNodes(gestor_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_uno)
