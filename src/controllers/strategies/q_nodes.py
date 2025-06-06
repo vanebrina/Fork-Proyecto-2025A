@@ -259,6 +259,10 @@ class QNodes(SIA):
                 )
             ] = emd_particion_candidata, dist_particion_candidata
 
+
+            print(f"Partición candidata: {deltas_ciclo}")
+            print(f"EMD candidata: {emd_particion_candidata}")
+
             par_candidato = (
                 [omegas_ciclo[LAST_IDX]]
                 if isinstance(omegas_ciclo[LAST_IDX], tuple)

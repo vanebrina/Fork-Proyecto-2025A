@@ -24,3 +24,6 @@ PYPHI_ANALYSIS_TAG: str = f"{PYPHI_LABEL}_analysis"
 QNODES_LABEL: str = "Q-Nodes"
 QNODES_STRAREGY_TAG: str = f"{QNODES_LABEL}_strategy"
 QNODES_ANALYSIS_TAG: str = f"{QNODES_LABEL}_analysis"
+
+
+QNODESMOD_STRAREGY_TAG = f"{QNODES_LABEL}_mod_strategy"
