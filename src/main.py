@@ -1,32 +1,54 @@
+# main.py
+
+
 from src.controllers.manager import Manager
-
-from src.controllers.strategies.q_nodes_modificate import QNodesMod
+from src.controllers.strategies.geometric import Geometric
+from src.controllers.strategies.phi import Phi
+from src.models.base.application import aplicacion
 from src.controllers.strategies.q_nodes import QNodes
-# from src.controllers.strategies.QNodes_full_sparse import QNodesFullSparse
+from src.controllers.strategies.q_nodes_modificate import QNodesMod
 
 
-def iniciar():
-    """Punto de entrada principal"""
-                    # ABCDEFGHIJKLMNOPQRST #
-    estado_inicio =  "11111111111111111111"
-    condiciones =    "11111111111111111111"
-    alcance =        "10111111111111111111"
-    mecanismo =      "10111111111111111111"
+def iniciar_n6():
+    """
+    Ejemplo con n = 6 bits (N = 64 estados), para ver en consola todos los prints
+    de progreso sin demorar más de ~1 segundo.
+    """
+    # 6 bits → "bitstrings" de longitud 6
+    estado_inicio = "1000000000"  
+    condiciones   = "1111111111"  # Condiciones iniciales (todos los bits activos)
+    alcance       = "1111111111"
+    mecanismo     = "1111111111"
 
-    gestor_sistema = Manager(estado_inicial=estado_inicio)
-    # gestor_sistema.generar_red(dimensiones=25)
-    # print("Red generada con exito")
 
-    analizador_fn = QNodes(gestor_sistema)
-    analizador_fm = QNodesMod(gestor_sistema)
-    # analizador_fs = QNodesFullSparse(gestor_sistema)
-    sia_uno = analizador_fn.aplicar_estrategia(condiciones, alcance, mecanismo)
-    sia_dos = analizador_fm.aplicar_estrategia(condiciones, alcance, mecanismo)
-    # sia_tres = analizador_fs.aplicar_estrategia(condiciones, alcance, mecanismo)
+    config = Manager(estado_inicial=estado_inicio)
+    geom   = QNodes(config)
+    print("\n▶︎Ejecutando Geometric en modo 'verbose' con n = 6 (64 estados)...\n")
+    solucion = geom.aplicar_estrategia(condiciones, alcance, mecanismo)
+    print("\n▶︎Solución obtenida:")
+    print(solucion)
 
-    print("SIA con QNodes")
-    print(sia_uno)
-    print("SIA con QNodesMod")
-    print(sia_dos)
-    # print("SIA con QNodesSpace")
-    # print(sia_tres)
+
+def generar_red_20A():
+    # Configurar valores necesarios en la aplicación (si no están definidos)
+    aplicacion.pagina_sample_network = "A"
+    aplicacion.semilla_numpy = 42  # Puedes cambiarla si necesitas resultados distintos
+
+
+    estado_inicial = "0" * 20  # Estado inicial de 20 bits
+
+
+    # Crear instancia del manejador
+    manager = Manager(estado_inicial=estado_inicial)
+
+
+    # Forzar generación sin interacción y sin preguntar por reemplazo
+    filename = manager.generar_red(dimensiones=20, datos_discretos=True)
+
+
+    print(f"✅ Red generada: {filename}")
+
+
+if __name__ == "__main__":
+    # generar_red_20A()
+    iniciar_n6()
