@@ -6,6 +6,8 @@ from numba import njit
 from tqdm import tqdm
 from scipy.sparse import lil_matrix
 import csv
+import pickle
+import os
 
 from src.controllers.manager import Manager
 from src.models.base.sia import SIA
@@ -18,6 +20,10 @@ from src.funcs.format import fmt_biparticion
 from src.constants.models import DUMMY_ARR
 from src.funcs.base import emd_efecto  # Importar emd_efecto
 
+# Caché global para resultados
+_phi_cache = {}
+_cost_cache = {}  # Caché para tabla de costos
+
 @njit(cache=True)
 def l1_distance(a: np.ndarray, b: np.ndarray) -> float:
     result = 0.0
@@ -26,6 +32,10 @@ def l1_distance(a: np.ndarray, b: np.ndarray) -> float:
     return result
 
 def calcular_tabla_costos_sparse(tensor: np.ndarray):
+    tensor_key = tuple(tensor.flatten())
+    if tensor_key in _cost_cache:
+        return _cost_cache[tensor_key]
+
     n = tensor.shape[0]
     tabla = lil_matrix((n, n), dtype=np.float32)
     for i in range(n):
@@ -35,9 +45,20 @@ def calcular_tabla_costos_sparse(tensor: np.ndarray):
             d = bin(i ^ j).count("1")
             gamma = 2 ** (-d)
             tabla[i, j] = gamma * abs(tensor[i] - tensor[j])
+    _cost_cache[tensor_key] = tabla
     return tabla
 
-_phi_cache = {}
+def load_cache(cache_file="phi_cache.pkl"):
+    global _phi_cache, _cost_cache
+    if os.path.exists(cache_file):
+        with open(cache_file, 'rb') as f:
+            caches = pickle.load(f)
+            _phi_cache.update(caches.get('phi', {}))
+            _cost_cache.update(caches.get('cost', {}))
+
+def save_cache(cache_file="phi_cache.pkl"):
+    with open(cache_file, 'wb') as f:
+        pickle.dump({'phi': _phi_cache, 'cost': _cost_cache}, f)
 
 def evaluar_biparticion(args):
     subsistema, dist_subsistema, futuros, presentes = args
@@ -53,7 +74,6 @@ def evaluar_biparticion(args):
     dist_particion = bip.distribucion_marginal()
     phi = emd_efecto(dist_particion, dist_subsistema)
     _phi_cache[key] = (phi, dist_particion, key)
-    print(f"Evaluando: futuros={futuros}, presentes={presentes}, phi={phi}")  # Log para depuración
     return _phi_cache[key]
 
 @profile(context={"strategy": "geometric"})
@@ -63,6 +83,7 @@ class Geometric(SIA):
         profiler_manager.start_session(f"NET{len(config.estado_inicial)}{config.pagina}")
         self.logger = SafeLogger("geometric")
         self.debug_observer = DebugObserver()
+        load_cache()  # Cargar caché al inicializar
 
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str) -> Solution:
         self.sia_tiempo_inicio = time.time()
@@ -72,6 +93,9 @@ class Geometric(SIA):
         subsistema = self.sia_subsistema
         dist_subsistema = subsistema.distribucion_marginal()
         print(f"Subsistema: indices_ncubos={subsistema.indices_ncubos}, dims_ncubos={subsistema.dims_ncubos}")
+
+        # Identificar el índice del nodo futuro (asumiendo que es el último de indices_ncubos)
+        futuro_idx = subsistema.indices_ncubos[-1] if subsistema.indices_ncubos.size > 0 else None
 
         print("[2] Calculando tabla de costos aproximada...")
         tensor = getattr(subsistema, 'tensor_principal', dist_subsistema)
@@ -87,13 +111,14 @@ class Geometric(SIA):
         presentes = subsistema.dims_ncubos
         n = len(futuros)
 
+        # Generar solo biparticiones que incluyan el nodo futuro
         candidatas_list = []
         for i, b in enumerate(biparticiones(futuros, presentes)):
-            # Permitir tamaños flexibles
-            if 0 <= len(b[0]) <= n and 0 <= len(b[1]) <= n:
-                candidatas_list.append(b)
-            if len(candidatas_list) >= 5000000:
-                break
+            fsel, psel = b
+            if futuro_idx is not None and (futuro_idx in fsel or futuro_idx in psel):
+                # Poda: limitar a un subconjunto si el tamaño es grande
+                if len(candidatas_list) < min(1000, 2 ** (len(futuros) + len(presentes))):  # Límite razonable
+                    candidatas_list.append(b)
 
         print(f"    ▸ Total de biparticiones evaluadas: {len(candidatas_list)}")
 
@@ -123,9 +148,12 @@ class Geometric(SIA):
         bipart_str = fmt_biparticion((fsel, psel), (tuple(dual_f), tuple(dual_p)))
         tiempo_total = time.time() - self.sia_tiempo_inicio
 
+        save_cache()  # Guardar caché al finalizar
+        print(f"Tiempo total: {tiempo_total} segundos")
+
         # Complejidad:
-        # - Tabla de costos: O(n^2) donde n = 2^d
-        # - Evaluación de m biparticiones: O(m)
+        # - Tabla de costos: O(n^2) donde n = 2^d (memoizado)
+        # - Evaluación de m biparticiones: O(m) (reducido con poda)
         # - Total: O(n^2 + m)
 
         return Solution(
