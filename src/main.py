@@ -15,10 +15,10 @@ def iniciar_n6():
     de progreso sin demorar más de ~1 segundo.
     """
     # 6 bits → "bitstrings" de longitud 6
-    estado_inicio = "1000000000"  
-    condiciones   = "1111111111"  # Condiciones iniciales (todos los bits activos)
-    alcance       = "1111111111"
-    mecanismo     = "1111111111"
+    estado_inicio = "100000"  
+    condiciones   = "111111"  # Condiciones iniciales (todos los bits activos)
+    alcance       = "101010"
+    mecanismo     = "010101"
 
 
     config = Manager(estado_inicial=estado_inicio)
@@ -27,6 +27,12 @@ def iniciar_n6():
     solucion = geom.aplicar_estrategia(condiciones, alcance, mecanismo)
     print("\n▶︎Solución obtenida:")
     print(solucion)
+
+    geom2   = Geometric(config)
+    print("\n▶︎Ejecutando Geometric en modo 'verbose' con n = 6 (64 estados)...\n")
+    solucion2 = geom2.aplicar_estrategia(condiciones, alcance, mecanismo)
+    print("\n▶︎Solución obtenida:")
+    print(solucion2)
 
 
 def generar_red_20A():
